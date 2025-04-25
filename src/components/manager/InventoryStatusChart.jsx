@@ -55,7 +55,7 @@ const InventoryStatusChart = ({ data }) => {
   };
 
   return (
-    <div className="h-64">
+    <div className="h-96">
       <Pie data={chartData} options={options} />
     </div>
   );

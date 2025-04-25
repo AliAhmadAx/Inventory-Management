@@ -18,25 +18,6 @@ const Sidebar = () => {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Common navigation items for all roles
-  const commonNavItems = [
-    {
-      to: "/dashboard",
-      icon: <UserIcon className="h-5 w-5" />,
-      label: "Dashboard",
-    },
-    {
-      to: "/inventory",
-      icon: <CubeIcon className="h-5 w-5" />,
-      label: "Inventory",
-    },
-    {
-      to: "/shipments",
-      icon: <TruckIcon className="h-5 w-5" />,
-      label: "Shipments",
-    },
-  ];
-
   // Role-specific navigation items
   const roleNavItems = {
     "super-admin": [
@@ -53,6 +34,11 @@ const Sidebar = () => {
     ],
     manager: [
       {
+        to: "/manager/dashboard",
+        icon: <UserIcon className="h-5 w-5" />,
+        label: "Manage Dashboard",
+      },
+      {
         to: "/manager/inventory",
         icon: <ClipboardDocumentCheckIcon className="h-5 w-5" />,
         label: "Manage Inventory",
@@ -64,6 +50,21 @@ const Sidebar = () => {
       },
     ],
     user: [
+      {
+        to: "/user/dashboard",
+        icon: <UserIcon className="h-5 w-5" />,
+        label: "Dashboard",
+      },
+      {
+        to: "/user/inventory",
+        icon: <CubeIcon className="h-5 w-5" />,
+        label: "Inventory",
+      },
+      {
+        to: "/user/shipments",
+        icon: <TruckIcon className="h-5 w-5" />,
+        label: "Shipments",
+      },
       {
         to: "/user/pricing",
         icon: <CurrencyDollarIcon className="h-5 w-5" />,
@@ -78,7 +79,7 @@ const Sidebar = () => {
   };
 
   // Combine common and role-specific items
-  const navItems = [...commonNavItems, ...(roleNavItems[user?.role] || [])];
+  const navItems = [...(roleNavItems[user?.role] || [])];
 
   return (
     <div className="hidden md:flex md:flex-shrink-0">

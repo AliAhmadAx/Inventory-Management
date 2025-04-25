@@ -36,31 +36,31 @@ const AppRoutes = () => {
 
       <Route element={<Layout />}>
         {/* User protected routes */}
-        <Route element={<UserRoutes />}>
-          <Route path="/dashboard" element={<UserDashboard />} />
-          <Route path="/inventory" element={<UserInventory />} />
-          <Route path="/inventory/add" element={<AddInventory />} />
-          <Route path="/inventory/:id/edit" element={<EditInventory />} />
-          <Route path="/shipments" element={<UserShipments />} />
-          <Route path="user/pricing" element={<PricingCalculator />} />
+        <Route path="/user" element={<UserRoutes />}>
+          <Route path="dashboard" element={<UserDashboard />} />
+          <Route path="inventory" element={<UserInventory />} />
+          <Route path="inventory/add" element={<AddInventory />} />
+          <Route path="inventory/:id/edit" element={<EditInventory />} />
+          <Route path="shipments" element={<UserShipments />} />
+          <Route path="pricing" element={<PricingCalculator />} />
           {/* <Route path="user/reports" element={<Report />} /> */}
 
           {/* Add more user routes as needed */}
         </Route>
 
         {/* Manager protected routes */}
-        <Route element={<ManagerRoutes />}>
-          <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-          <Route path="/manager/inventory" element={<ManagerInventory />} />
-          <Route path="/manager/shipments" element={<ManagerShipments />} />
+        <Route path="/manager" element={<ManagerRoutes />}>
+          <Route path="dashboard" element={<ManagerDashboard />} />
+          <Route path="inventory" element={<ManagerInventory />} />
+          <Route path="shipments" element={<ManagerShipments />} />
           {/* Add more manager routes as needed */}
         </Route>
 
         {/* Admin protected routes */}
-        <Route element={<AdminRoutes />}>
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/warehouses" element={<AdminWarehouses />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin" element={<AdminRoutes />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="warehouses" element={<AdminWarehouses />} />
+          <Route path="users" element={<AdminUsers />} />
           {/* Add more admin routes as needed */}
         </Route>
       </Route>

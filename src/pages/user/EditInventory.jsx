@@ -45,7 +45,7 @@ const EditInventory = () => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Add New Inventory</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Edit Inventory</h1>
         <p className="text-gray-600">
           Fill in the details of your inventory item
         </p>

@@ -247,8 +247,7 @@ const UserInventory = () => {
                   header: "Actions",
                   accessor: "actions",
                   cell: (item) => (
-                    <Link to={`/user/inventory/edit/${item.id}`}>
-                      {console.log(item, "item in Table Columns")}
+                    <Link to={`/user/inventory/${item.id}/edit`}>
                       <Button
                         variant="ghost"
                         size="small"
