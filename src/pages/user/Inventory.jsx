@@ -16,6 +16,7 @@ import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
 import Pagination from "../../components/ui/Pagination";
 import StatusBadge from "../../components/ui/StatusBadge";
+import ProductLabelForm from "../../components/user/ProductLabelForm";
 
 const UserInventory = () => {
   const { user } = useAuth();
@@ -295,6 +296,8 @@ const UserInventory = () => {
           />
         </div>
       )}
+      
+      <ProductLabelForm />
     </div>
   );
 };

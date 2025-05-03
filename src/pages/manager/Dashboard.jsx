@@ -14,6 +14,7 @@ import {
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import Button from "../../components/ui/Button";
+import ProductLabelQueries from "../../components/manager/ProductLabelQueries";
 
 const ManagerDashboard = () => {
   const { user } = useAuth();
@@ -294,6 +295,8 @@ const ManagerDashboard = () => {
             <span>Run Report</span>
           </Button>
         </div>
+
+        <ProductLabelQueries />
       </div>
     </div>
   );
