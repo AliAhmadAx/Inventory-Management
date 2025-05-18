@@ -25,6 +25,7 @@ import ManagerShipments from "../pages/manager/Shipments";
 import AdminDashboard from "../pages/admin/Dashboard";
 import AdminWarehouses from "../pages/admin/Warehouses";
 import AdminUsers from "../pages/admin/Users";
+import CustomerDashboard from "../pages/customer/Dashboard";
 
 const AppRoutes = () => {
   return (
@@ -43,6 +44,8 @@ const AppRoutes = () => {
           <Route path="inventory/:id/edit" element={<EditInventory />} />
           <Route path="shipments" element={<UserShipments />} />
           <Route path="pricing" element={<PricingCalculator />} />
+          <Route path="customer-dashboard" element={<CustomerDashboard />} />
+
           {/* <Route path="user/reports" element={<Report />} /> */}
 
           {/* Add more user routes as needed */}

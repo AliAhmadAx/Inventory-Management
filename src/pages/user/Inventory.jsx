@@ -38,59 +38,35 @@ const UserInventory = () => {
           {
             id: "INV-1001",
             name: "Smartphone X",
-            sku: "ELEC-SPX-2023",
-            category: "Electronics",
-            quantity: 5,
-            location: "A-12-5",
             status: "in_stock",
-            lastChecked: "2023-06-14",
-            value: 599.99,
+            fulfillmentUrl: "/api/download/INV-1001",
           },
           {
             id: "INV-1002",
             name: "Wireless Headphones",
-            sku: "ELEC-WH-2023",
-            category: "Electronics",
-            quantity: 2,
-            location: "A-10-2",
             status: "low_stock",
-            lastChecked: "2023-06-13",
-            value: 149.99,
+            fulfillmentUrl: "/api/download/INV-1002",
           },
           {
             id: "INV-1003",
             name: "Cotton T-Shirt",
-            sku: "CLOTH-TS-2023",
-            category: "Clothing",
-            quantity: 15,
-            location: "B-5-8",
             status: "in_stock",
-            lastChecked: "2023-06-15",
-            value: 19.99,
+            fulfillmentUrl: "/api/download/INV-1003",
           },
           {
             id: "INV-1004",
             name: "Office Chair",
-            sku: "FURN-OC-2023",
-            category: "Furniture",
-            quantity: 0,
-            location: "C-2-1",
             status: "out_of_stock",
-            lastChecked: "2023-06-10",
-            value: 199.99,
+            fulfillmentUrl: "/api/download/INV-1004",
           },
           {
             id: "INV-1005",
             name: "Desk Lamp",
-            sku: "FURN-DL-2023",
-            category: "Furniture",
-            quantity: 3,
-            location: "C-1-5",
             status: "in_stock",
-            lastChecked: "2023-06-12",
-            value: 39.99,
+            fulfillmentUrl: "/api/download/INV-1005",
           },
         ];
+
         setInventory(mockInventory);
       } catch (error) {
         addNotification({
@@ -152,11 +128,11 @@ const UserInventory = () => {
     );
   };
 
-  const getQuantityIndicator = (quantity) => {
-    if (quantity === 0) return "text-red-600 font-bold";
-    if (quantity < 3) return "text-yellow-600 font-medium";
-    return "text-green-600";
-  };
+  // const getQuantityIndicator = (quantity) => {
+  //   if (quantity === 0) return "text-red-600 font-bold";
+  //   if (quantity < 3) return "text-yellow-600 font-medium";
+  //   return "text-green-600";
+  // };
 
   return (
     <div className="space-y-6">
@@ -172,7 +148,7 @@ const UserInventory = () => {
               icon={<PlusIcon className="h-4 w-4" />}
               iconPosition="left"
             >
-              Add Item
+              Add Package
             </Button>
           </Link>
           <Button
@@ -236,47 +212,39 @@ const UserInventory = () => {
           <>
             <Table
               columns={[
-                { header: "ID", accessor: "idDisplay" },
                 { header: "Name", accessor: "name" },
-                { header: "SKU", accessor: "sku" },
-                { header: "Category", accessor: "category" },
-                { header: "Quantity", accessor: "quantity" },
-                { header: "Location", accessor: "location" },
+                { header: "Tracking Number", accessor: "trackingNumber" },
                 { header: "Status", accessor: "status" },
-                { header: "Value", accessor: "value" },
                 {
-                  header: "Actions",
-                  accessor: "actions",
+                  header: "Fulfillment",
+                  accessor: "fulfillment",
                   cell: (item) => (
-                    <Link to={`/user/inventory/${item.id}/edit`}>
+                    <a
+                      href={item.fulfillmentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Button
                         variant="ghost"
                         size="small"
-                        icon={<PencilSquareIcon className="h-4 w-4" />}
+                        icon={<ArrowPathIcon className="h-4 w-4" />}
                         iconPosition="left"
                       >
-                        Edit
+                        Download
                       </Button>
-                    </Link>
+                    </a>
                   ),
                 },
               ]}
               data={currentItems.map((item) => ({
-                ...item,
-                idDisplay: (
-                  <span className="font-mono font-medium">{item.id}</span>
-                ),
-                sku: <span className="font-mono text-sm">{item.sku}</span>,
-                quantity: (
-                  <span className={getQuantityIndicator(item.quantity)}>
-                    {item.quantity}
-                  </span>
-                ),
+                name: item.name,
+                trackingNumber: item.id, // Assuming ID is the tracking number
                 status: getStatusBadge(item.status),
-                value: `$${item.value.toFixed(2)}`,
-                lastChecked: new Date(item.lastChecked).toLocaleDateString(),
+                fulfillmentUrl: `/api/download/${item.id}`, // Replace with your actual URL logic
+                fulfillment: item, // To pass to the cell renderer
               }))}
             />
+
             {filteredInventory.length === 0 && (
               <div className="p-8 text-center text-gray-500">
                 No inventory items found matching your criteria.
@@ -296,8 +264,8 @@ const UserInventory = () => {
           />
         </div>
       )}
-      
-      <ProductLabelForm />
+
+      {/* <ProductLabelForm /> */}
     </div>
   );
 };

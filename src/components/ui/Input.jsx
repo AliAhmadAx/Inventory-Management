@@ -26,13 +26,13 @@ const Input = React.forwardRef(
     },
     ref
   ) => {
-    const baseClasses = `block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+    const baseClasses = `block w-full p-3 rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
       disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"
     }`;
 
     const inputClasses = `${
       error
-        ? "border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500"
+        ? "border-red-300 text-red-900 p-3 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500"
         : ""
     } ${
       icon ? (iconPosition === "left" ? "pl-10" : "pr-10") : ""

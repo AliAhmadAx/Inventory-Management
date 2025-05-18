@@ -26,7 +26,7 @@ const Select = React.forwardRef(
     },
     ref
   ) => {
-    const baseClasses = `block w-full rounded-md shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+    const baseClasses = `block w-full rounded-md p-3 shadow-sm border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
       disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"
     }`;
 
