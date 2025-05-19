@@ -1,57 +1,88 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { PDFDocument } from "pdf-lib";
+import * as pdfjsLib from "pdfjs-dist";
+// import pdfWorker from "pdfjs-dist/build/pdf.worker.mjs";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 
+// pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+
 const AddInventory = () => {
-  const [labels, setLabels] = useState([
-    {
-      name: "",
-      quantity: 1,
-      value: "",
-      packageImage: null,
-      labelPdf: null,
-    },
+  const [packages, setPackages] = useState([
+    { name: "", quantity: 1, value: "", image: null, pdf: null },
   ]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (index, e) => {
     const { name, value, files } = e.target;
-    setLabels((prev) => {
-      const updated = [...prev];
-      if (name === "packageImage" || name === "labelPdf") {
-        updated[index][name] = files[0] || null;
-      } else if (name === "quantity") {
-        updated[index][name] = Number(value);
-      } else {
-        updated[index][name] = value;
-      }
-      return updated;
-    });
+    setPackages((prev) =>
+      prev.map((pkg, i) =>
+        i === index ? { ...pkg, [name]: files ? files[0] : value } : pkg
+      )
+    );
   };
 
   const addLabel = () => {
-    setLabels((prev) => [
-      ...prev,
-      { name: "", quantity: 1, value: "", packageImage: null, labelPdf: null },
+    setPackages([
+      ...packages,
+      { name: "", quantity: 1, value: "", image: null, pdf: null },
     ]);
+  };
+
+  const extractTextFromPDF = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    let textContent = "";
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const strings = content.items.map((item) => item.str);
+      textContent += strings.join(" ") + "\n";
+    }
+    return textContent;
+  };
+
+  const mergePDFs = async (pdfFiles) => {
+    const mergedPdf = await PDFDocument.create();
+
+    for (const file of pdfFiles) {
+      const bytes = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(bytes);
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach((page) => mergedPdf.addPage(page));
+    }
+
+    const mergedPdfBytes = await mergedPdf.save();
+    const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "merged-labels.pdf";
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      // For now just log the labels array
-      console.log("Submitting labels:", labels);
 
-      // TODO: Replace with API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      navigate("/user/inventory");
-    } catch (err) {
-      setError("Failed to add package. Please try again.");
-      console.error(err);
+    try {
+      const allTexts = [];
+      const pdfFiles = [];
+
+      for (const pkg of packages) {
+        if (!pkg.pdf) continue;
+        const text = await extractTextFromPDF(pkg.pdf);
+        allTexts.push({ name: pkg.name, text });
+        pdfFiles.push(pkg.pdf);
+      }
+
+      console.log("Extracted Text:", allTexts);
+
+      await mergePDFs(pdfFiles);
+    } catch (error) {
+      console.error("Error processing PDFs:", error);
     } finally {
       setLoading(false);
     }
@@ -59,27 +90,15 @@ const AddInventory = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Add Package</h1>
-
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {labels.map((label, idx) => (
-          <div
-            key={idx}
-            className="p-4 border rounded-md bg-gray-50"
-          >
-            <h2 className="text-lg font-semibold mb-4">Label #{idx + 1}</h2>
-
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Add Inventory Package</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {packages.map((pkg, index) => (
+          <div key={index} className="space-y-4 p-4 border rounded bg-gray-50">
             <Input
               label="Package Name"
               name="name"
-              value={label.name}
-              onChange={(e) => handleChange(idx, e)}
+              value={pkg.name}
+              onChange={(e) => handleChange(index, e)}
               required
             />
 
@@ -88,8 +107,8 @@ const AddInventory = () => {
               name="quantity"
               type="number"
               min="1"
-              value={label.quantity}
-              onChange={(e) => handleChange(idx, e)}
+              value={pkg.quantity}
+              onChange={(e) => handleChange(index, e)}
               required
             />
 
@@ -98,58 +117,37 @@ const AddInventory = () => {
               name="value"
               type="number"
               step="0.01"
-              min="0"
-              value={label.value}
-              onChange={(e) => handleChange(idx, e)}
+              value={pkg.value}
+              onChange={(e) => handleChange(index, e)}
               required
             />
 
-            <div className="mt-4">
-              <label className="block font-medium mb-1" htmlFor={`packageImage-${idx}`}>
-                Package Image (optional)
-              </label>
-              <input
-                id={`packageImage-${idx}`}
-                type="file"
-                name="packageImage"
-                accept="image/*"
-                onChange={(e) => handleChange(idx, e)}
-              />
-            </div>
+            <Input
+              label="Package Image (optional)"
+              name="image"
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleChange(index, e)}
+            />
 
-            <div className="mt-4">
-              <label className="block font-medium mb-1" htmlFor={`labelPdf-${idx}`}>
-                PDF Label (required)
-              </label>
-              <input
-                id={`labelPdf-${idx}`}
-                type="file"
-                name="labelPdf"
-                accept="application/pdf"
-                onChange={(e) => handleChange(idx, e)}
-                required
-              />
-            </div>
+            <Input
+              label="Label PDF (required)"
+              name="pdf"
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => handleChange(index, e)}
+              required
+            />
           </div>
         ))}
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between pt-4">
           <Button type="button" variant="outline" onClick={addLabel}>
-            Add Label
+            + Add Label
           </Button>
-
-          <div className="space-x-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/user/inventory")}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save Package"}
-            </Button>
-          </div>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Processing..." : "Save Packages"}
+          </Button>
         </div>
       </form>
     </div>

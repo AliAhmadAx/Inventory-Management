@@ -26,6 +26,8 @@ import AdminDashboard from "../pages/admin/Dashboard";
 import AdminWarehouses from "../pages/admin/Warehouses";
 import AdminUsers from "../pages/admin/Users";
 import CustomerDashboard from "../pages/customer/Dashboard";
+import LoginManager from "../pages/auth/LoginManager";
+import LoginAdmin from "../pages/auth/LoginAdmin";
 
 const AppRoutes = () => {
   return (
@@ -33,6 +35,8 @@ const AppRoutes = () => {
       {/* Public routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
+         <Route path="/login-manager" element={<LoginManager />} />
+            <Route path="/login-admin" element={<LoginAdmin />} />
       <Route path="/register" element={<RegisterPage />} />
 
       <Route element={<Layout />}>

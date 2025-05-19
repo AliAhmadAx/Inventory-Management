@@ -32,7 +32,7 @@ const Input = React.forwardRef(
 
     const inputClasses = `${
       error
-        ? "border-red-300 text-red-900 p-3 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500"
+        ? "border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500"
         : ""
     } ${
       icon ? (iconPosition === "left" ? "pl-10" : "pr-10") : ""

@@ -6,7 +6,7 @@ const ManagerRoutes = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  return user?.role === "manager" ? <Outlet /> : <Navigate to="/login" />;
+  return user?.role === "manager" ? <Outlet /> : <Navigate to="/manager/dashboard" />;
 };
 
 export default ManagerRoutes;

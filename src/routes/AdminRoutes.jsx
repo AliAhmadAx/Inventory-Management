@@ -6,7 +6,7 @@ const AdminRoutes = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  return user?.role === "super-admin" ? <Outlet /> : <Navigate to="/login" />;
+  return user?.role === "super-admin" ? <Outlet /> : <Navigate to="/admin/warehouses" />;
 };
 
 export default AdminRoutes;

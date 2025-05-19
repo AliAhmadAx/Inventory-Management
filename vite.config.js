@@ -8,4 +8,7 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+   optimizeDeps: {
+    include: ["pdfjs-dist/build/pdf.worker.mjs"]
+  }
 })
